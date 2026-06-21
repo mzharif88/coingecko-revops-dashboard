@@ -26,7 +26,7 @@ export default function TrendingCoins() {
     fetch("/api/cg?path=%2Fsearch%2Ftrending")
       .then((r) => r.json())
       .then((d) => {
-        setCoins(d.coins?.slice(0, 10) ?? []);
+        setCoins(d.coins?.slice(0, 15) ?? []);
         setLoading(false);
       });
   }, []);
@@ -36,12 +36,12 @@ export default function TrendingCoins() {
       <div className="flex items-center gap-2 mb-4">
         <Flame className="w-4 h-4 text-orange-400" />
         <h2 className="text-sm font-semibold text-[#E6EDF3]">Trending on CoinGecko</h2>
-        <span className="text-xs text-[#8B949E] ml-auto">Live</span>
+        <span className="text-xs text-[#8B949E] ml-auto">Live · Top 15</span>
       </div>
 
       {loading ? (
         <div className="space-y-3">
-          {Array.from({ length: 10 }).map((_, i) => (
+          {Array.from({ length: 15 }).map((_, i) => (
             <div key={i} className="h-8 bg-[#21262D] rounded animate-pulse" />
           ))}
         </div>

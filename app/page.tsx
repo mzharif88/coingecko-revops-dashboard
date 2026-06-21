@@ -6,6 +6,8 @@ import Watchlist from "@/components/Watchlist";
 import PipelineTracker from "@/components/PipelineTracker";
 import RenewalRadar from "@/components/RenewalRadar";
 import QuickNotes from "@/components/QuickNotes";
+import RevenueMetrics from "@/components/RevenueMetrics";
+import ApiUsageMonitor from "@/components/ApiUsageMonitor";
 
 export default function Dashboard() {
   const now = new Date();
@@ -32,10 +34,13 @@ export default function Dashboard() {
       </header>
 
       <main className="px-4 py-5 max-w-7xl mx-auto space-y-5">
-        {/* Market Pulse — full width */}
+        {/* Market Pulse */}
         <MarketPulse />
 
-        {/* Sector Performance — full width */}
+        {/* Revenue Metrics */}
+        <RevenueMetrics />
+
+        {/* Sector Performance */}
         <SectorPerformance />
 
         {/* Trending + Top Movers */}
@@ -44,21 +49,24 @@ export default function Dashboard() {
           <TopMovers />
         </div>
 
-        {/* Watchlist + Pipeline */}
+        {/* Pipeline + Renewal */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <Watchlist />
           <PipelineTracker />
+          <RenewalRadar />
         </div>
 
-        {/* Renewal Radar + Quick Notes */}
+        {/* API Usage + Watchlist */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <RenewalRadar />
-          <QuickNotes />
+          <ApiUsageMonitor />
+          <Watchlist />
         </div>
+
+        {/* Quick Notes — full width */}
+        <QuickNotes />
       </main>
 
       <footer className="border-t border-[#21262D] px-6 py-3 text-center text-xs text-[#8B949E]">
-        Data via CoinGecko API · Pipeline & notes stored locally · Refreshes every 60s
+        Market data via CoinGecko API · Pipeline & renewals use mock data · Connect HubSpot for live CRM sync
       </footer>
     </div>
   );

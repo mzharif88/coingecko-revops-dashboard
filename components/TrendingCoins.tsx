@@ -26,7 +26,7 @@ export default function TrendingCoins() {
     fetch("/api/cg?path=%2Fsearch%2Ftrending")
       .then((r) => r.json())
       .then((d) => {
-        setCoins(d.coins?.slice(0, 7) ?? []);
+        setCoins(d.coins?.slice(0, 10) ?? []);
         setLoading(false);
       });
   }, []);
@@ -41,7 +41,7 @@ export default function TrendingCoins() {
 
       {loading ? (
         <div className="space-y-3">
-          {Array.from({ length: 7 }).map((_, i) => (
+          {Array.from({ length: 10 }).map((_, i) => (
             <div key={i} className="h-8 bg-[#21262D] rounded animate-pulse" />
           ))}
         </div>

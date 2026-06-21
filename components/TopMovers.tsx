@@ -47,8 +47,8 @@ export default function TopMovers() {
         const sorted = [...data].sort(
           (a, b) => b.price_change_percentage_24h - a.price_change_percentage_24h
         );
-        setGainers(sorted.slice(0, 6));
-        setLosers(sorted.slice(-6).reverse());
+        setGainers(sorted.slice(0, 15));
+        setLosers(sorted.slice(-15).reverse());
         setLoading(false);
       });
   }, []);
@@ -85,7 +85,7 @@ export default function TopMovers() {
 
       {loading ? (
         <div className="space-y-3">
-          {Array.from({ length: 6 }).map((_, i) => (
+          {Array.from({ length: 15 }).map((_, i) => (
             <div key={i} className="h-10 bg-[#21262D] rounded animate-pulse" />
           ))}
         </div>

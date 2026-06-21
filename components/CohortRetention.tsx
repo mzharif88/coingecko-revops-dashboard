@@ -4,20 +4,28 @@ import { Grid } from "lucide-react";
 
 interface CohortRow {
   month: string;
+  entryTier: string;
   startCount: number;
   retention: number[];
 }
 
 const COHORTS: CohortRow[] = [
-  { month: "Jan 2025", startCount: 12, retention: [100, 92, 83, 75, 75, 67] },
-  { month: "Feb 2025", startCount: 9,  retention: [100, 89, 78, 78, 67] },
-  { month: "Mar 2025", startCount: 14, retention: [100, 93, 86, 79, 79] },
-  { month: "Apr 2025", startCount: 11, retention: [100, 91, 82, 73] },
-  { month: "May 2025", startCount: 8,  retention: [100, 88, 75] },
-  { month: "Jun 2025", startCount: 16, retention: [100, 94] },
+  { month: "Jan 2025", entryTier: "Demo",     startCount: 12, retention: [100, 92, 83, 75, 75, 67] },
+  { month: "Feb 2025", entryTier: "Analyst",  startCount: 9,  retention: [100, 89, 78, 78, 67] },
+  { month: "Mar 2025", entryTier: "Demo",     startCount: 14, retention: [100, 93, 86, 79, 79] },
+  { month: "Apr 2025", entryTier: "Analyst",  startCount: 11, retention: [100, 91, 82, 73] },
+  { month: "May 2025", entryTier: "Demo",     startCount: 8,  retention: [100, 88, 75] },
+  { month: "Jun 2025", entryTier: "Demo",     startCount: 16, retention: [100, 94] },
 ];
 
 const MAX_MONTHS = 6;
+
+const TIER_COLORS: Record<string, string> = {
+  Demo: "text-yellow-400 bg-yellow-900/30",
+  Analyst: "text-blue-400 bg-blue-900/30",
+  Pro: "text-purple-400 bg-purple-900/30",
+  Enterprise: "text-[#8DC647] bg-green-900/30",
+};
 
 function cellColor(pct: number): string {
   if (pct >= 90) return "bg-green-900/50 text-green-400";
@@ -35,29 +43,25 @@ export default function CohortRetention() {
   const best  = m1Scores.reduce((a, b) => b.val > a.val ? b : a);
   const worst = m1Scores.filter(x => x.val > 0).reduce((a, b) => b.val < a.val ? b : a);
 
-  // Trend: is M1 improving or declining?
   const recentM1 = m1Vals.slice(-3);
-  const m1Trend = recentM1.length >= 2
-    ? recentM1[recentM1.length - 1] - recentM1[0]
-    : 0;
+  const m1Trend = recentM1.length >= 2 ? recentM1[recentM1.length - 1] - recentM1[0] : 0;
 
-  // Headline insight
   let insight = "";
   let insightColor = "text-[#8B949E]";
   if (m1Trend > 2) {
-    insight = `M1 retention trending up +${m1Trend.toFixed(0)}pp over last 3 cohorts — onboarding improving.`;
+    insight = `Demo tier M1 retention trending up +${m1Trend.toFixed(0)}pp — onboarding flow improving. Consider targeting these accounts for Analyst upgrade at M2.`;
     insightColor = "text-green-400";
   } else if (m1Trend < -2) {
-    insight = `M1 retention declining ${m1Trend.toFixed(0)}pp — investigate early churn signals.`;
+    insight = `Demo tier M1 retention declining ${Math.abs(m1Trend).toFixed(0)}pp — early churn signal. Review onboarding touchpoints and activation criteria.`;
     insightColor = "text-red-400";
   } else {
     const jan = COHORTS[0];
     const m5 = jan.retention[5];
     if (m5 !== undefined && m5 < 75) {
-      insight = `Jan 2025 cohort dropped to ${m5}% at M5 — long-term retention needs attention.`;
+      insight = `Jan 2025 Demo cohort dropped to ${m5}% at M5 — long-term retention at risk. Flag for QBR and tier upgrade conversation.`;
       insightColor = "text-yellow-400";
     } else {
-      insight = `${best.month.split(" ")[0]} cohort leads M1 at ${best.val}%. Avg M1 stable at ${avgM1}%.`;
+      insight = `${best.month.split(" ")[0]} cohort leads M1 at ${best.val}%. Avg M1 stable at ${avgM1}% — Demo-to-paid pipeline is healthy.`;
       insightColor = "text-[#8DC647]";
     }
   }
@@ -66,11 +70,11 @@ export default function CohortRetention() {
     <div className="card p-4">
       <div className="flex items-center gap-2 mb-3">
         <Grid className="w-4 h-4 text-purple-400" />
-        <h2 className="text-sm font-semibold text-[#E6EDF3]">Cohort Retention</h2>
-        <span className="text-xs text-[#8B949E] ml-auto">Monthly signups · Mock</span>
+        <h2 className="text-sm font-semibold text-[#E6EDF3]">API Tier Cohort Retention</h2>
+        <span className="text-xs text-[#8B949E] ml-auto">By entry tier · Mock</span>
       </div>
 
-      {/* Headline insight — first thing leadership reads */}
+      {/* Headline insight */}
       <div className={`mb-4 p-3 bg-[#0D1117] rounded-lg border border-[#21262D] text-xs font-medium ${insightColor}`}>
         💡 {insight}
       </div>
@@ -100,17 +104,23 @@ export default function CohortRetention() {
         <table className="w-full text-xs">
           <thead>
             <tr>
-              <th className="text-left text-[#8B949E] font-medium pb-2 pr-3 whitespace-nowrap">Cohort</th>
+              <th className="text-left text-[#8B949E] font-medium pb-2 pr-2 whitespace-nowrap">Cohort</th>
+              <th className="text-left text-[#8B949E] font-medium pb-2 pr-2">Entry Tier</th>
               <th className="text-center text-[#8B949E] font-medium pb-2 px-1">n</th>
               {Array.from({ length: MAX_MONTHS }).map((_, i) => (
-                <th key={i} className="text-center text-[#8B949E] font-medium pb-2 px-1 min-w-[44px]">M{i}</th>
+                <th key={i} className="text-center text-[#8B949E] font-medium pb-2 px-1 min-w-[40px]">M{i}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {COHORTS.map((row) => (
               <tr key={row.month}>
-                <td className="text-[#E6EDF3] pr-3 py-1 whitespace-nowrap">{row.month}</td>
+                <td className="text-[#E6EDF3] pr-2 py-1 whitespace-nowrap">{row.month}</td>
+                <td className="pr-2 py-1">
+                  <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${TIER_COLORS[row.entryTier] ?? "text-[#8B949E]"}`}>
+                    {row.entryTier}
+                  </span>
+                </td>
                 <td className="text-center text-[#8B949E] px-1 py-1">{row.startCount}</td>
                 {Array.from({ length: MAX_MONTHS }).map((_, mi) => {
                   const val = row.retention[mi];
@@ -119,7 +129,7 @@ export default function CohortRetention() {
                       {val !== undefined ? (
                         <div className={`text-center rounded px-1 py-0.5 font-medium ${cellColor(val)}`}>{val}%</div>
                       ) : (
-                        <div className="text-center text-[#21262D] text-xs">—</div>
+                        <div className="text-center text-[#21262D]">—</div>
                       )}
                     </td>
                   );
@@ -129,6 +139,7 @@ export default function CohortRetention() {
           </tbody>
         </table>
       </div>
+      <div className="mt-2 text-xs text-[#8B949E]">Each cohort = API accounts that signed up in that month. Retention = still active on CoinGecko API tier.</div>
     </div>
   );
 }

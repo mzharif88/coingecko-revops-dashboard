@@ -16,6 +16,7 @@ import LeadershipSummary from "@/components/LeadershipSummary";
 import ProspectRadar from "@/components/ProspectRadar";
 import AdsPipeline from "@/components/AdsPipeline";
 import ResetDemoData from "@/components/ResetDemoData";
+import ChainActivityMonitor from "@/components/ChainActivityMonitor";
 
 export default function Dashboard() {
   const now = new Date();
@@ -93,7 +94,16 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* ── SECTION 5: MARKET CONTEXT (collapsed) ──────────────────────── */}
+        {/* ── SECTION 5: ON-CHAIN INTELLIGENCE ───────────────────────────── */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-1 h-4 bg-cyan-400 rounded-full" />
+            <span className="text-xs font-semibold text-[#8B949E] uppercase tracking-wider">On-Chain Intelligence</span>
+          </div>
+          <ChainActivityMonitor />
+        </div>
+
+        {/* ── SECTION 6: MARKET CONTEXT (collapsed) ──────────────────────── */}
         <details className="group">
           <summary className="flex items-center gap-2 cursor-pointer list-none mb-3 select-none">
             <div className="w-1 h-4 bg-orange-400 rounded-full" />
@@ -121,7 +131,7 @@ export default function Dashboard() {
 
       <footer className="border-t border-[#21262D] px-6 py-4 flex items-center justify-between">
         <span className="text-xs text-[#8B949E]">
-          CoinGecko RevOps Command Center · Pipeline & renewals use mock data · Add <code className="text-[#8DC647]">HUBSPOT_API_KEY</code> + <code className="text-[#8DC647]">COINGECKO_API_KEY</code> for live sync
+          CoinGecko RevOps Command Center · Add <code className="text-[#8DC647]">HUBSPOT_API_KEY</code> + <code className="text-[#8DC647]">COINGECKO_API_KEY</code> for live CRM & API sync
         </span>
         <ResetDemoData />
       </footer>

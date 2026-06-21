@@ -15,6 +15,7 @@ import CohortRetention from "@/components/CohortRetention";
 import LeadershipSummary from "@/components/LeadershipSummary";
 import ProspectRadar from "@/components/ProspectRadar";
 import AdsPipeline from "@/components/AdsPipeline";
+import ResetDemoData from "@/components/ResetDemoData";
 
 export default function Dashboard() {
   const now = new Date();
@@ -118,8 +119,11 @@ export default function Dashboard() {
 
       </main>
 
-      <footer className="border-t border-[#21262D] px-6 py-3 text-center text-xs text-[#8B949E]">
-        CoinGecko RevOps Command Center · API, Ads & renewals use mock data · Add HUBSPOT_API_KEY for live CRM sync
+      <footer className="border-t border-[#21262D] px-6 py-4 flex items-center justify-between">
+        <span className="text-xs text-[#8B949E]">
+          CoinGecko RevOps Command Center · Pipeline & renewals use mock data · Add <code className="text-[#8DC647]">HUBSPOT_API_KEY</code> + <code className="text-[#8DC647]">COINGECKO_API_KEY</code> for live sync
+        </span>
+        <ResetDemoData />
       </footer>
     </div>
   );

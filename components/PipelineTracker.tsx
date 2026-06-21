@@ -16,7 +16,7 @@ interface Deal {
   notes: string;
 }
 
-const TIERS = ["Analyst", "Lite", "Pro", "Enterprise", "Custom"];
+const TIERS = ["Demo", "Analyst", "Lite", "Pro", "Enterprise"];
 const STAGES = ["Prospect", "Outreach", "Demo", "Proposal", "Negotiation", "Closed Won", "Closed Lost"];
 const STAGE_COLORS: Record<string, string> = {
   Prospect: "bg-gray-700 text-gray-300",
@@ -29,6 +29,75 @@ const STAGE_COLORS: Record<string, string> = {
 };
 
 const STORAGE_KEY = "revops_pipeline";
+
+const MOCK_DEALS: Deal[] = [
+  {
+    id: "m1",
+    company: "Binance",
+    contact: "Kevin Lim",
+    tier: "Enterprise",
+    value: "120000",
+    stage: "Negotiation",
+    nextAction: "Send revised contract",
+    nextActionDate: new Date(Date.now() + 2 * 86400000).toISOString().split("T")[0],
+    notes: "Upgrading from Pro. Need custom rate limit SLA.",
+  },
+  {
+    id: "m2",
+    company: "OKX",
+    contact: "Sarah Chen",
+    tier: "Pro",
+    value: "42000",
+    stage: "Proposal",
+    nextAction: "Follow up on pricing",
+    nextActionDate: new Date(Date.now() + 4 * 86400000).toISOString().split("T")[0],
+    notes: "Evaluating against CMC API. Emphasize historical data depth.",
+  },
+  {
+    id: "m3",
+    company: "Nansen",
+    contact: "Wei Zhang",
+    tier: "Analyst",
+    value: "18000",
+    stage: "Demo",
+    nextAction: "Product demo call",
+    nextActionDate: new Date(Date.now() + 1 * 86400000).toISOString().split("T")[0],
+    notes: "On-chain analytics team. Interested in NFT & DeFi endpoints.",
+  },
+  {
+    id: "m4",
+    company: "Jump Trading",
+    contact: "Alex Park",
+    tier: "Enterprise",
+    value: "95000",
+    stage: "Outreach",
+    nextAction: "LinkedIn connect + intro email",
+    nextActionDate: new Date(Date.now() + 3 * 86400000).toISOString().split("T")[0],
+    notes: "Quant desk. High-freq data needs.",
+  },
+  {
+    id: "m5",
+    company: "Messari",
+    contact: "Tom Rivera",
+    tier: "Pro",
+    value: "36000",
+    stage: "Closed Won",
+    nextAction: "",
+    nextActionDate: "",
+    notes: "Closed Q1. Upsell opportunity at renewal.",
+  },
+  {
+    id: "m6",
+    company: "Delphi Digital",
+    contact: "Maya Patel",
+    tier: "Analyst",
+    value: "14400",
+    stage: "Prospect",
+    nextAction: "Research team outreach",
+    nextActionDate: new Date(Date.now() + 7 * 86400000).toISOString().split("T")[0],
+    notes: "Research-focused. Good fit for Analyst tier.",
+  },
+];
 
 const empty = (): Deal => ({
   id: Date.now().toString(),
@@ -50,7 +119,12 @@ export default function PipelineTracker() {
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) setDeals(JSON.parse(saved));
+    if (saved) {
+      setDeals(JSON.parse(saved));
+    } else {
+      setDeals(MOCK_DEALS);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(MOCK_DEALS));
+    }
   }, []);
 
   const save = (updated: Deal[]) => {
@@ -87,6 +161,10 @@ export default function PipelineTracker() {
     return days <= 3;
   });
 
+  const winRate = deals.length
+    ? Math.round((wonDeals.length / deals.filter(d => d.stage !== "Prospect").length) * 100) || 0
+    : 0;
+
   return (
     <div className="card p-4">
       <div className="flex items-center gap-2 mb-4">
@@ -101,18 +179,22 @@ export default function PipelineTracker() {
       </div>
 
       {/* Summary */}
-      <div className="grid grid-cols-3 gap-2 mb-4">
+      <div className="grid grid-cols-4 gap-2 mb-4">
         <div className="bg-[#0D1117] rounded-lg p-3 text-center">
           <div className="text-lg font-bold text-[#E6EDF3]">{deals.filter(d => !["Closed Won","Closed Lost"].includes(d.stage)).length}</div>
-          <div className="text-xs text-[#8B949E]">Active Deals</div>
+          <div className="text-xs text-[#8B949E]">Active</div>
         </div>
         <div className="bg-[#0D1117] rounded-lg p-3 text-center">
-          <div className="text-lg font-bold text-[#8DC647]">${totalPipeline.toLocaleString()}</div>
+          <div className="text-lg font-bold text-[#8DC647]">${(totalPipeline/1000).toFixed(0)}k</div>
           <div className="text-xs text-[#8B949E]">Pipeline ARR</div>
         </div>
         <div className="bg-[#0D1117] rounded-lg p-3 text-center">
-          <div className="text-lg font-bold text-green-400">${wonValue.toLocaleString()}</div>
+          <div className="text-lg font-bold text-green-400">${(wonValue/1000).toFixed(0)}k</div>
           <div className="text-xs text-[#8B949E]">Closed Won</div>
+        </div>
+        <div className="bg-[#0D1117] rounded-lg p-3 text-center">
+          <div className="text-lg font-bold text-blue-400">{winRate}%</div>
+          <div className="text-xs text-[#8B949E]">Win Rate</div>
         </div>
       </div>
 
@@ -218,7 +300,7 @@ export default function PipelineTracker() {
                 )}
               </div>
               <div className="flex items-center gap-2">
-                {deal.value && <span className="text-xs font-medium text-[#8DC647]">${deal.value}</span>}
+                {deal.value && <span className="text-xs font-medium text-[#8DC647]">${parseInt(deal.value).toLocaleString()}</span>}
                 <select
                   value={deal.stage}
                   onClick={(e) => e.stopPropagation()}
@@ -235,7 +317,7 @@ export default function PipelineTracker() {
               <div className="px-3 pb-3 border-t border-[#21262D] pt-2 bg-[#0D1117]/50">
                 <div className="grid grid-cols-2 gap-x-4 text-xs text-[#8B949E] mb-2">
                   {deal.contact && <div>Contact: <span className="text-[#E6EDF3]">{deal.contact}</span></div>}
-                  {deal.value && <div>Value: <span className="text-[#8DC647]">${deal.value}/yr</span></div>}
+                  {deal.value && <div>ARR: <span className="text-[#8DC647]">${parseInt(deal.value).toLocaleString()}/yr</span></div>}
                 </div>
                 {deal.notes && <p className="text-xs text-[#8B949E] mb-2">{deal.notes}</p>}
                 <button

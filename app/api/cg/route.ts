@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const CG_BASE = "https://api.coingecko.com/api/v3";
+const CG_BASE     = "https://api.coingecko.com/api/v3";
 const CG_PRO_BASE = "https://pro-api.coingecko.com/api/v3";
-const CG_API_KEY = process.env.COINGECKO_API_KEY;
+
+const CG_API_KEY     = process.env.COINGECKO_API_KEY;      // Demo key
+const CG_PRO_API_KEY = process.env.COINGECKO_PRO_API_KEY;  // Pro/Analyst/Enterprise key (optional)
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -14,11 +16,21 @@ export async function GET(req: NextRequest) {
     if (key !== "path") params.append(key, val);
   });
 
-  const base = CG_API_KEY ? CG_PRO_BASE : CG_BASE;
-  const url = `${base}${path}${params.toString() ? "?" + params.toString() : ""}`;
-
   const headers: Record<string, string> = { Accept: "application/json" };
-  if (CG_API_KEY) headers["x-cg-pro-api-key"] = CG_API_KEY;
+  let base = CG_BASE;
+
+  if (CG_PRO_API_KEY) {
+    // Paid Pro/Analyst/Enterprise key — use pro-api base + pro header
+    base = CG_PRO_BASE;
+    headers["x-cg-pro-api-key"] = CG_PRO_API_KEY;
+  } else if (CG_API_KEY) {
+    // Demo key — stays on public base URL, uses demo header
+    base = CG_BASE;
+    headers["x-cg-demo-api-key"] = CG_API_KEY;
+  }
+  // No key — public API, no header
+
+  const url = `${base}${path}${params.toString() ? "?" + params.toString() : ""}`;
 
   try {
     const res = await fetch(url, {

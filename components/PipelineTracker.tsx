@@ -29,86 +29,27 @@ const STAGE_COLORS: Record<string, string> = {
 };
 
 const STORAGE_KEY = "revops_pipeline";
+const d = (n: number) => new Date(Date.now() + n * 86400000).toISOString().split("T")[0];
 
 const MOCK_DEALS: Deal[] = [
-  {
-    id: "m1",
-    company: "Binance",
-    contact: "Kevin Lim",
-    tier: "Enterprise",
-    value: "120000",
-    stage: "Negotiation",
-    nextAction: "Send revised contract",
-    nextActionDate: new Date(Date.now() + 2 * 86400000).toISOString().split("T")[0],
-    notes: "Upgrading from Pro. Need custom rate limit SLA.",
-  },
-  {
-    id: "m2",
-    company: "OKX",
-    contact: "Sarah Chen",
-    tier: "Pro",
-    value: "42000",
-    stage: "Proposal",
-    nextAction: "Follow up on pricing",
-    nextActionDate: new Date(Date.now() + 4 * 86400000).toISOString().split("T")[0],
-    notes: "Evaluating against CMC API. Emphasize historical data depth.",
-  },
-  {
-    id: "m3",
-    company: "Nansen",
-    contact: "Wei Zhang",
-    tier: "Analyst",
-    value: "18000",
-    stage: "Demo",
-    nextAction: "Product demo call",
-    nextActionDate: new Date(Date.now() + 1 * 86400000).toISOString().split("T")[0],
-    notes: "On-chain analytics team. Interested in NFT & DeFi endpoints.",
-  },
-  {
-    id: "m4",
-    company: "Jump Trading",
-    contact: "Alex Park",
-    tier: "Enterprise",
-    value: "95000",
-    stage: "Outreach",
-    nextAction: "LinkedIn connect + intro email",
-    nextActionDate: new Date(Date.now() + 3 * 86400000).toISOString().split("T")[0],
-    notes: "Quant desk. High-freq data needs.",
-  },
-  {
-    id: "m5",
-    company: "Messari",
-    contact: "Tom Rivera",
-    tier: "Pro",
-    value: "36000",
-    stage: "Closed Won",
-    nextAction: "",
-    nextActionDate: "",
-    notes: "Closed Q1. Upsell opportunity at renewal.",
-  },
-  {
-    id: "m6",
-    company: "Delphi Digital",
-    contact: "Maya Patel",
-    tier: "Analyst",
-    value: "14400",
-    stage: "Prospect",
-    nextAction: "Research team outreach",
-    nextActionDate: new Date(Date.now() + 7 * 86400000).toISOString().split("T")[0],
-    notes: "Research-focused. Good fit for Analyst tier.",
-  },
+  { id: "m1",  company: "Binance",         contact: "Kevin Lim",     tier: "Enterprise", value: "120000", stage: "Negotiation",  nextAction: "Send revised contract",              nextActionDate: d(2),  notes: "Upgrading from Pro. Need custom rate limit SLA." },
+  { id: "m2",  company: "OKX",             contact: "Sarah Chen",    tier: "Pro",        value: "42000",  stage: "Proposal",     nextAction: "Follow up on pricing deck",          nextActionDate: d(4),  notes: "Evaluating against CMC API. Emphasize historical data depth." },
+  { id: "m3",  company: "Nansen",          contact: "Wei Zhang",     tier: "Analyst",    value: "18000",  stage: "Demo",         nextAction: "Product demo call",                  nextActionDate: d(1),  notes: "On-chain analytics team. Interested in NFT & DeFi endpoints." },
+  { id: "m4",  company: "Jump Trading",    contact: "Alex Park",     tier: "Enterprise", value: "95000",  stage: "Outreach",     nextAction: "LinkedIn connect + intro email",     nextActionDate: d(3),  notes: "Quant desk. High-freq data needs. Warm intro via Wintermute." },
+  { id: "m5",  company: "Messari",         contact: "Tom Rivera",    tier: "Pro",        value: "36000",  stage: "Closed Won",   nextAction: "",                                   nextActionDate: "",    notes: "Closed Q1. Upsell opportunity at renewal in Q3." },
+  { id: "m6",  company: "Delphi Digital",  contact: "Maya Patel",    tier: "Analyst",    value: "14400",  stage: "Prospect",     nextAction: "Research team cold outreach",        nextActionDate: d(7),  notes: "Research-focused. Good fit for Analyst tier." },
+  { id: "m7",  company: "Kaiko",           contact: "Pierre Dubois", tier: "Enterprise", value: "108000", stage: "Proposal",     nextAction: "Send enterprise pricing + SLA doc",  nextActionDate: d(5),  notes: "Institutional data client. Needs tick-by-tick OHLCV history." },
+  { id: "m8",  company: "Arkham Intel",    contact: "Ryan Moore",    tier: "Pro",        value: "38400",  stage: "Demo",         nextAction: "Technical API walkthrough",          nextActionDate: d(2),  notes: "On-chain surveillance focus. Heavy endpoint usage expected." },
+  { id: "m9",  company: "Chainalysis",     contact: "Lisa Nguyen",   tier: "Enterprise", value: "132000", stage: "Negotiation",  nextAction: "Legal review of data terms",         nextActionDate: d(6),  notes: "Compliance-driven buyer. Data licensing terms are critical." },
+  { id: "m10", company: "Token Terminal",  contact: "Mikko Lahti",   tier: "Analyst",    value: "16800",  stage: "Outreach",     nextAction: "Cold email + product one-pager",     nextActionDate: d(4),  notes: "Financial metrics for DeFi protocols. Analyst tier fits." },
+  { id: "m11", company: "Glassnode",       contact: "Jan Weber",     tier: "Pro",        value: "44000",  stage: "Closed Won",   nextAction: "",                                   nextActionDate: "",    notes: "Closed Q2. On-chain metrics team. Strong retention signal." },
+  { id: "m12", company: "Bitget",          contact: "Cindy Zhao",    tier: "Pro",        value: "39600",  stage: "Prospect",     nextAction: "Map to correct ICP tier",            nextActionDate: d(10), notes: "Fast-growing CEX. Trading data needs likely match Pro tier." },
+  { id: "m13", company: "Wintermute",      contact: "James Liu",     tier: "Enterprise", value: "96000",  stage: "Closed Won",   nextAction: "",                                   nextActionDate: "",    notes: "Algo trading desk. Renewed early. Upsell to custom SLA at next QBR." },
 ];
 
 const empty = (): Deal => ({
-  id: Date.now().toString(),
-  company: "",
-  contact: "",
-  tier: "Pro",
-  value: "",
-  stage: "Prospect",
-  nextAction: "",
-  nextActionDate: "",
-  notes: "",
+  id: Date.now().toString(), company: "", contact: "", tier: "Pro",
+  value: "", stage: "Prospect", nextAction: "", nextActionDate: "", notes: "",
 });
 
 export default function PipelineTracker() {
@@ -119,61 +60,40 @@ export default function PipelineTracker() {
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      setDeals(JSON.parse(saved));
-    } else {
-      setDeals(MOCK_DEALS);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(MOCK_DEALS));
-    }
+    if (saved) { setDeals(JSON.parse(saved)); }
+    else { setDeals(MOCK_DEALS); localStorage.setItem(STORAGE_KEY, JSON.stringify(MOCK_DEALS)); }
   }, []);
 
-  const save = (updated: Deal[]) => {
-    setDeals(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-  };
-
+  const save = (updated: Deal[]) => { setDeals(updated); localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)); };
   const addDeal = () => {
     if (!form.company) return;
     save([...deals, { ...form, id: Date.now().toString() }]);
-    setForm(empty());
-    setShowForm(false);
+    setForm(empty()); setShowForm(false);
   };
+  const removeDeal = (id: string) => save(deals.filter(d => d.id !== id));
+  const updateStage = (id: string, stage: string) => save(deals.map(d => d.id === id ? { ...d, stage } : d));
 
-  const removeDeal = (id: string) => save(deals.filter((d) => d.id !== id));
+  const activeDeals = deals.filter(d => !["Closed Won", "Closed Lost"].includes(d.stage));
+  const wonDeals    = deals.filter(d => d.stage === "Closed Won");
 
-  const updateStage = (id: string, stage: string) => {
-    save(deals.map((d) => (d.id === id ? { ...d, stage } : d)));
-  };
-
-  const totalPipeline = deals
-    .filter((d) => !["Closed Won", "Closed Lost"].includes(d.stage))
-    .reduce((sum, d) => sum + (parseFloat(d.value.replace(/[^0-9.]/g, "")) || 0), 0);
-
-  const wonDeals = deals.filter((d) => d.stage === "Closed Won");
-  const wonValue = wonDeals.reduce(
-    (sum, d) => sum + (parseFloat(d.value.replace(/[^0-9.]/g, "")) || 0),
-    0
-  );
-
-  const urgentDeals = deals.filter((d) => {
-    if (!d.nextActionDate || ["Closed Won", "Closed Lost"].includes(d.stage)) return false;
-    const days = differenceInDays(parseISO(d.nextActionDate), new Date());
-    return days <= 3;
-  });
-
-  const winRate = deals.length
-    ? Math.round((wonDeals.length / deals.filter(d => d.stage !== "Prospect").length) * 100) || 0
+  const totalPipeline = activeDeals.reduce((s, d) => s + (parseFloat(d.value) || 0), 0);
+  const wonValue      = wonDeals.reduce((s, d) => s + (parseFloat(d.value) || 0), 0);
+  const winRate       = deals.filter(d => d.stage !== "Prospect").length
+    ? Math.round((wonDeals.length / deals.filter(d => d.stage !== "Prospect").length) * 100)
     : 0;
+
+  const urgentDeals = activeDeals.filter(d => {
+    if (!d.nextActionDate) return false;
+    return differenceInDays(parseISO(d.nextActionDate), new Date()) <= 3;
+  });
 
   return (
     <div className="card p-4">
       <div className="flex items-center gap-2 mb-4">
         <DollarSign className="w-4 h-4 text-[#8DC647]" />
         <h2 className="text-sm font-semibold text-[#E6EDF3]">Deal Pipeline</h2>
-        <button
-          onClick={() => { setShowForm(!showForm); setForm(empty()); }}
-          className="ml-auto flex items-center gap-1 px-2.5 py-1 bg-[#8DC647] text-black text-xs font-semibold rounded-lg hover:bg-[#9fd455] transition-colors"
-        >
+        <button onClick={() => { setShowForm(!showForm); setForm(empty()); }}
+          className="ml-auto flex items-center gap-1 px-2.5 py-1 bg-[#8DC647] text-black text-xs font-semibold rounded-lg hover:bg-[#9fd455] transition-colors">
           <Plus className="w-3 h-3" /> New Deal
         </button>
       </div>
@@ -181,7 +101,7 @@ export default function PipelineTracker() {
       {/* Summary */}
       <div className="grid grid-cols-4 gap-2 mb-4">
         <div className="bg-[#0D1117] rounded-lg p-3 text-center">
-          <div className="text-lg font-bold text-[#E6EDF3]">{deals.filter(d => !["Closed Won","Closed Lost"].includes(d.stage)).length}</div>
+          <div className="text-lg font-bold text-[#E6EDF3]">{activeDeals.length}</div>
           <div className="text-xs text-[#8B949E]">Active</div>
         </div>
         <div className="bg-[#0D1117] rounded-lg p-3 text-center">
@@ -203,9 +123,7 @@ export default function PipelineTracker() {
         <div className="mb-3 p-2 bg-orange-900/20 border border-orange-800/40 rounded-lg">
           <div className="text-xs text-orange-400 font-medium mb-1">⚡ Action needed in ≤3 days</div>
           {urgentDeals.map(d => (
-            <div key={d.id} className="text-xs text-[#E6EDF3]">
-              {d.company} — {d.nextAction} ({d.nextActionDate})
-            </div>
+            <div key={d.id} className="text-xs text-[#E6EDF3]">{d.company} — {d.nextAction} ({d.nextActionDate})</div>
           ))}
         </div>
       )}
@@ -214,64 +132,26 @@ export default function PipelineTracker() {
       {showForm && (
         <div className="mb-4 p-3 bg-[#0D1117] border border-[#8DC647]/30 rounded-xl space-y-2">
           <div className="grid grid-cols-2 gap-2">
-            <input
-              placeholder="Company *"
-              value={form.company}
-              onChange={(e) => setForm({ ...form, company: e.target.value })}
-              className="px-2.5 py-1.5 bg-[#161B22] border border-[#21262D] rounded-lg text-xs text-[#E6EDF3] placeholder-[#8B949E] focus:outline-none focus:border-[#8DC647]"
-            />
-            <input
-              placeholder="Contact name"
-              value={form.contact}
-              onChange={(e) => setForm({ ...form, contact: e.target.value })}
-              className="px-2.5 py-1.5 bg-[#161B22] border border-[#21262D] rounded-lg text-xs text-[#E6EDF3] placeholder-[#8B949E] focus:outline-none focus:border-[#8DC647]"
-            />
+            <input placeholder="Company *" value={form.company} onChange={e => setForm({...form, company: e.target.value})} className="px-2.5 py-1.5 bg-[#161B22] border border-[#21262D] rounded-lg text-xs text-[#E6EDF3] placeholder-[#8B949E] focus:outline-none focus:border-[#8DC647]" />
+            <input placeholder="Contact name" value={form.contact} onChange={e => setForm({...form, contact: e.target.value})} className="px-2.5 py-1.5 bg-[#161B22] border border-[#21262D] rounded-lg text-xs text-[#E6EDF3] placeholder-[#8B949E] focus:outline-none focus:border-[#8DC647]" />
           </div>
           <div className="grid grid-cols-3 gap-2">
-            <select
-              value={form.tier}
-              onChange={(e) => setForm({ ...form, tier: e.target.value })}
-              className="px-2.5 py-1.5 bg-[#161B22] border border-[#21262D] rounded-lg text-xs text-[#E6EDF3] focus:outline-none focus:border-[#8DC647]"
-            >
-              {TIERS.map((t) => <option key={t}>{t}</option>)}
+            <select value={form.tier} onChange={e => setForm({...form, tier: e.target.value})} className="px-2.5 py-1.5 bg-[#161B22] border border-[#21262D] rounded-lg text-xs text-[#E6EDF3] focus:outline-none focus:border-[#8DC647]">
+              {TIERS.map(t => <option key={t}>{t}</option>)}
             </select>
-            <input
-              placeholder="ARR value ($)"
-              value={form.value}
-              onChange={(e) => setForm({ ...form, value: e.target.value })}
-              className="px-2.5 py-1.5 bg-[#161B22] border border-[#21262D] rounded-lg text-xs text-[#E6EDF3] placeholder-[#8B949E] focus:outline-none focus:border-[#8DC647]"
-            />
-            <select
-              value={form.stage}
-              onChange={(e) => setForm({ ...form, stage: e.target.value })}
-              className="px-2.5 py-1.5 bg-[#161B22] border border-[#21262D] rounded-lg text-xs text-[#E6EDF3] focus:outline-none focus:border-[#8DC647]"
-            >
-              {STAGES.map((s) => <option key={s}>{s}</option>)}
+            <input placeholder="ARR value ($)" value={form.value} onChange={e => setForm({...form, value: e.target.value})} className="px-2.5 py-1.5 bg-[#161B22] border border-[#21262D] rounded-lg text-xs text-[#E6EDF3] placeholder-[#8B949E] focus:outline-none focus:border-[#8DC647]" />
+            <select value={form.stage} onChange={e => setForm({...form, stage: e.target.value})} className="px-2.5 py-1.5 bg-[#161B22] border border-[#21262D] rounded-lg text-xs text-[#E6EDF3] focus:outline-none focus:border-[#8DC647]">
+              {STAGES.map(s => <option key={s}>{s}</option>)}
             </select>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <input
-              placeholder="Next action"
-              value={form.nextAction}
-              onChange={(e) => setForm({ ...form, nextAction: e.target.value })}
-              className="px-2.5 py-1.5 bg-[#161B22] border border-[#21262D] rounded-lg text-xs text-[#E6EDF3] placeholder-[#8B949E] focus:outline-none focus:border-[#8DC647]"
-            />
-            <input
-              type="date"
-              value={form.nextActionDate}
-              onChange={(e) => setForm({ ...form, nextActionDate: e.target.value })}
-              className="px-2.5 py-1.5 bg-[#161B22] border border-[#21262D] rounded-lg text-xs text-[#E6EDF3] focus:outline-none focus:border-[#8DC647]"
-            />
+            <input placeholder="Next action" value={form.nextAction} onChange={e => setForm({...form, nextAction: e.target.value})} className="px-2.5 py-1.5 bg-[#161B22] border border-[#21262D] rounded-lg text-xs text-[#E6EDF3] placeholder-[#8B949E] focus:outline-none focus:border-[#8DC647]" />
+            <input type="date" value={form.nextActionDate} onChange={e => setForm({...form, nextActionDate: e.target.value})} className="px-2.5 py-1.5 bg-[#161B22] border border-[#21262D] rounded-lg text-xs text-[#E6EDF3] focus:outline-none focus:border-[#8DC647]" />
           </div>
-          <textarea
-            placeholder="Notes..."
-            value={form.notes}
-            onChange={(e) => setForm({ ...form, notes: e.target.value })}
-            rows={2}
-            className="w-full px-2.5 py-1.5 bg-[#161B22] border border-[#21262D] rounded-lg text-xs text-[#E6EDF3] placeholder-[#8B949E] focus:outline-none focus:border-[#8DC647] resize-none"
-          />
+          <textarea placeholder="Notes..." value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} rows={2}
+            className="w-full px-2.5 py-1.5 bg-[#161B22] border border-[#21262D] rounded-lg text-xs text-[#E6EDF3] placeholder-[#8B949E] focus:outline-none focus:border-[#8DC647] resize-none" />
           <div className="flex gap-2 justify-end">
-            <button onClick={() => setShowForm(false)} className="px-3 py-1 text-xs text-[#8B949E] hover:text-[#E6EDF3]">Cancel</button>
+            <button onClick={() => setShowForm(false)} className="px-3 py-1 text-xs text-[#8B949E]">Cancel</button>
             <button onClick={addDeal} className="px-3 py-1 bg-[#8DC647] text-black text-xs font-semibold rounded-lg">Add Deal</button>
           </div>
         </div>
@@ -280,14 +160,12 @@ export default function PipelineTracker() {
       {/* Deal list */}
       <div className="space-y-2 max-h-96 overflow-y-auto">
         {deals.length === 0 && !showForm && (
-          <div className="text-center text-xs text-[#8B949E] py-8">No deals yet. Click &quot;New Deal&quot; to start tracking.</div>
+          <div className="text-center text-xs text-[#8B949E] py-8">No deals yet.</div>
         )}
-        {deals.map((deal) => (
+        {deals.map(deal => (
           <div key={deal.id} className="border border-[#21262D] rounded-lg overflow-hidden">
-            <div
-              className="flex items-center gap-3 p-2.5 cursor-pointer hover:bg-[#21262D]/50 transition-colors"
-              onClick={() => setExpanded(expanded === deal.id ? null : deal.id)}
-            >
+            <div className="flex items-center gap-3 p-2.5 cursor-pointer hover:bg-[#21262D]/50 transition-colors"
+              onClick={() => setExpanded(expanded === deal.id ? null : deal.id)}>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium text-[#E6EDF3] truncate">{deal.company}</span>
@@ -295,24 +173,19 @@ export default function PipelineTracker() {
                 </div>
                 {deal.nextAction && (
                   <div className="text-xs text-[#8B949E] truncate mt-0.5">
-                    Next: {deal.nextAction} {deal.nextActionDate && `· ${deal.nextActionDate}`}
+                    Next: {deal.nextAction}{deal.nextActionDate && ` · ${deal.nextActionDate}`}
                   </div>
                 )}
               </div>
               <div className="flex items-center gap-2">
                 {deal.value && <span className="text-xs font-medium text-[#8DC647]">${parseInt(deal.value).toLocaleString()}</span>}
-                <select
-                  value={deal.stage}
-                  onClick={(e) => e.stopPropagation()}
-                  onChange={(e) => updateStage(deal.id, e.target.value)}
-                  className={`text-xs px-2 py-0.5 rounded-full border-0 focus:outline-none cursor-pointer ${STAGE_COLORS[deal.stage] ?? "bg-gray-700 text-gray-300"}`}
-                >
-                  {STAGES.map((s) => <option key={s} className="bg-[#161B22] text-[#E6EDF3]">{s}</option>)}
+                <select value={deal.stage} onClick={e => e.stopPropagation()} onChange={e => updateStage(deal.id, e.target.value)}
+                  className={`text-xs px-2 py-0.5 rounded-full border-0 focus:outline-none cursor-pointer ${STAGE_COLORS[deal.stage] ?? "bg-gray-700 text-gray-300"}`}>
+                  {STAGES.map(s => <option key={s} className="bg-[#161B22] text-[#E6EDF3]">{s}</option>)}
                 </select>
                 <ChevronDown className={`w-3.5 h-3.5 text-[#8B949E] transition-transform ${expanded === deal.id ? "rotate-180" : ""}`} />
               </div>
             </div>
-
             {expanded === deal.id && (
               <div className="px-3 pb-3 border-t border-[#21262D] pt-2 bg-[#0D1117]/50">
                 <div className="grid grid-cols-2 gap-x-4 text-xs text-[#8B949E] mb-2">
@@ -320,10 +193,7 @@ export default function PipelineTracker() {
                   {deal.value && <div>ARR: <span className="text-[#8DC647]">${parseInt(deal.value).toLocaleString()}/yr</span></div>}
                 </div>
                 {deal.notes && <p className="text-xs text-[#8B949E] mb-2">{deal.notes}</p>}
-                <button
-                  onClick={() => removeDeal(deal.id)}
-                  className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors"
-                >
+                <button onClick={() => removeDeal(deal.id)} className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors">
                   <Trash2 className="w-3 h-3" /> Remove
                 </button>
               </div>

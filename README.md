@@ -1,54 +1,91 @@
 # CoinGecko RevOps Command Center
 
-Revenue Operations dashboard for tracking crypto market signals, deal pipeline, renewals, and account watchlist.
+A Revenue Operations dashboard built as a portfolio project for the CoinGecko RevOps Associate (L2) role. Designed to give sales teams, CS, and leadership a single pane of glass across pipeline, renewals, market intelligence, and revenue forecasting.
 
-## Stack
-- Next.js 14 (App Router) + TypeScript
-- Tailwind CSS
-- CoinGecko Free Public API (no key required to start)
-- localStorage for pipeline, watchlist notes, and renewals
+**Live demo:** https://coingecko-revops-dashboard.vercel.app
 
-## Local Development
+---
+
+## What it does
+
+The dashboard is structured around 4 RevOps workflows:
+
+| Section | Components | Purpose |
+|---|---|---|
+| Leadership View | LeadershipSummary | 10-second KPI snapshot — quota attainment, at-risk ARR, overdue QBRs, open pipeline |
+| Revenue & Forecast | RevenueTargets, ForecastActual, CohortRetention | Quarterly targets, forecast vs actual with editable quarters, API tier cohort retention |
+| Pipeline & Deals | PipelineTracker, HubSpotSync, ApiUsageMonitor, ProspectRadar, AdsPipeline | Full deal lifecycle — API subscription deals, HubSpot sync, usage-signal upsells, exchange coverage gaps, CG Ads campaigns |
+| Renewals & Retention | RenewalRadar, QBRTracker | At-risk ARR tracking, renewal timeline buckets, QBR health scores and overdue alerts |
+| Market Context | MarketPulse, TrendingCoins, TopMovers, SectorPerformance, Watchlist | Live CoinGecko market data as sales context — collapsed by default |
+
+---
+
+## Tech stack
+
+- **Framework:** Next.js 14 (App Router)
+- **Styling:** Tailwind CSS
+- **Charts:** Recharts
+- **Icons:** Lucide React
+- **Data:** CoinGecko Public API (via internal proxy at `/api/cg`)
+- **CRM:** HubSpot (mock → live when `HUBSPOT_API_KEY` added)
+- **Persistence:** localStorage for all RevOps data
+- **Deployment:** Vercel
+
+---
+
+## Live data vs mock data
+
+| Component | Data source |
+|---|---|
+| MarketPulse, TrendingCoins, TopMovers, SectorPerformance, Watchlist | **Live** — CoinGecko API |
+| ProspectRadar | **Live** — CoinGecko `/exchanges` endpoint |
+| PipelineTracker, RenewalRadar, QBRTracker, AdsPipeline | Mock (localStorage) — connect HubSpot for live |
+| HubSpotSync | Mock → **live** when `HUBSPOT_API_KEY` is set |
+| ForecastActual | Mock (localStorage, fully editable) |
+| CohortRetention, RevenueTargets, ApiUsageMonitor | Mock (hardcoded targets) |
+| LeadershipSummary | Computed from all localStorage keys |
+
+---
+
+## Setup
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+### Environment variables
 
-## Deploy to Vercel (one-time setup)
-
-1. Push this folder to a GitHub repo
-2. Go to [vercel.com](https://vercel.com) → New Project → Import from GitHub
-3. Vercel auto-detects Next.js — click **Deploy**
-4. Done. Every `git push` auto-deploys.
-
-## Optional: Add CoinGecko Pro API Key
-
-For higher rate limits, add your key in Vercel → Project → Settings → Environment Variables:
-
-```
-COINGECKO_API_KEY = your_key_here
-```
-
-The app automatically uses the Pro endpoint when this is set.
-
-## Dashboard Sections
-
-| Section | Data Source | Updates |
+| Variable | Required | Description |
 |---|---|---|
-| Market Pulse | CoinGecko `/global` + Fear & Greed | Every 60s |
-| Sector Performance | CoinGecko `/coins/categories` | Every 5min |
-| Trending Coins | CoinGecko `/search/trending` | Every 2min |
-| Top Movers | CoinGecko `/coins/markets` | Every 60s |
-| Watchlist | CoinGecko `/coins/markets` + localStorage | Every 60s |
-| Deal Pipeline | localStorage | Persistent |
-| Renewal Radar | localStorage | Persistent |
-| Quick Notes | localStorage | Persistent |
+| `COINGECKO_API_KEY` | Optional | CoinGecko Demo key (free at coingecko.com/en/api) — increases rate limit from 30/min to higher threshold |
+| `HUBSPOT_API_KEY` | Optional | HubSpot Private App token — switches HubSpotSync from mock to live CRM data |
 
-## Editing on the go (Claude iOS workflow)
+Add both to Vercel: **Project → Settings → Environment Variables**
 
-1. Open this repo in Claude iOS
-2. Make changes via chat
-3. Push to GitHub → Vercel auto-deploys in ~30s
+---
+
+## Design decisions
+
+**RevOps-first layout** — Leadership Summary is pinned at the top. Market context is collapsed at the bottom. A VP can read the dashboard in 10 seconds without scrolling.
+
+**Mock data that reflects real CoinGecko customers** — pipeline deals reference Binance, OKX, Kaiko, Chainalysis, Glassnode. Renewal accounts reference Coinbase, Wintermute, Kraken. Realistic enough to demo CoinGecko API tier structure (Demo → Analyst → Pro → Enterprise).
+
+**HubSpot-ready architecture** — the `/api/hubspot` route normalises HubSpot deal data into the same shape as mock deals. Switching from mock to live requires only adding an env var — no code changes.
+
+**LeadershipSummary reads from localStorage** — all RevOps components write to keyed localStorage stores (`revops_pipeline`, `revops_renewals`, `revops_qbr`, `revops_forecast`). LeadershipSummary reads and computes KPIs client-side, so changes in any component instantly update the summary strip.
+
+---
+
+## CoinGecko API tier structure (referenced in mock data)
+
+| Tier | Monthly calls | Use case |
+|---|---|---|
+| Demo | 10,000 | Evaluation / small projects |
+| Analyst | 500,000 | Research teams, data analysts |
+| Pro | 2,000,000 | Mid-size exchanges, trading desks |
+| Enterprise | Custom | Large exchanges, institutional clients |
+
+---
+
+Built by [Zarif](https://github.com/mzharif88) · Stack: Next.js · Tailwind · CoinGecko API · HubSpot

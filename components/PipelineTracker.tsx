@@ -19,32 +19,35 @@ interface Deal {
 const TIERS = ["Demo", "Analyst", "Lite", "Pro", "Enterprise"];
 const STAGES = ["Prospect", "Outreach", "Demo", "Proposal", "Negotiation", "Closed Won", "Closed Lost"];
 const STAGE_COLORS: Record<string, string> = {
-  Prospect: "bg-gray-700 text-gray-300",
-  Outreach: "bg-blue-900/50 text-blue-300",
-  Demo: "bg-purple-900/50 text-purple-300",
-  Proposal: "bg-yellow-900/50 text-yellow-300",
-  Negotiation: "bg-orange-900/50 text-orange-300",
-  "Closed Won": "bg-green-900/50 text-green-300",
-  "Closed Lost": "bg-red-900/50 text-red-300",
+  Prospect:       "bg-gray-700 text-gray-300",
+  Outreach:       "bg-blue-900/50 text-blue-300",
+  Demo:           "bg-purple-900/50 text-purple-300",
+  Proposal:       "bg-yellow-900/50 text-yellow-300",
+  Negotiation:    "bg-orange-900/50 text-orange-300",
+  "Closed Won":   "bg-green-900/50 text-green-300",
+  "Closed Lost":  "bg-red-900/50 text-red-300",
 };
 
 const STORAGE_KEY = "revops_pipeline";
 const d = (n: number) => new Date(Date.now() + n * 86400000).toISOString().split("T")[0];
 
+// Pricing reference (CoinGecko public API tiers):
+// Analyst: $129/mo = $1,548/yr | Pro: $499/mo = $5,988/yr
+// Enterprise: custom, ~$2k-10k+/mo | values below reflect negotiated/volume deals
 const MOCK_DEALS: Deal[] = [
-  { id: "m1",  company: "Binance",         contact: "Kevin Lim",     tier: "Enterprise", value: "120000", stage: "Negotiation",  nextAction: "Send revised contract",              nextActionDate: d(2),  notes: "Upgrading from Pro. Need custom rate limit SLA." },
-  { id: "m2",  company: "OKX",             contact: "Sarah Chen",    tier: "Pro",        value: "42000",  stage: "Proposal",     nextAction: "Follow up on pricing deck",          nextActionDate: d(4),  notes: "Evaluating against CMC API. Emphasize historical data depth." },
-  { id: "m3",  company: "Nansen",          contact: "Wei Zhang",     tier: "Analyst",    value: "18000",  stage: "Demo",         nextAction: "Product demo call",                  nextActionDate: d(1),  notes: "On-chain analytics team. Interested in NFT & DeFi endpoints." },
-  { id: "m4",  company: "Jump Trading",    contact: "Alex Park",     tier: "Enterprise", value: "95000",  stage: "Outreach",     nextAction: "LinkedIn connect + intro email",     nextActionDate: d(3),  notes: "Quant desk. High-freq data needs. Warm intro via Wintermute." },
-  { id: "m5",  company: "Messari",         contact: "Tom Rivera",    tier: "Pro",        value: "36000",  stage: "Closed Won",   nextAction: "",                                   nextActionDate: "",    notes: "Closed Q1. Upsell opportunity at renewal in Q3." },
-  { id: "m6",  company: "Delphi Digital",  contact: "Maya Patel",    tier: "Analyst",    value: "14400",  stage: "Prospect",     nextAction: "Research team cold outreach",        nextActionDate: d(7),  notes: "Research-focused. Good fit for Analyst tier." },
-  { id: "m7",  company: "Kaiko",           contact: "Pierre Dubois", tier: "Enterprise", value: "108000", stage: "Proposal",     nextAction: "Send enterprise pricing + SLA doc",  nextActionDate: d(5),  notes: "Institutional data client. Needs tick-by-tick OHLCV history." },
-  { id: "m8",  company: "Arkham Intel",    contact: "Ryan Moore",    tier: "Pro",        value: "38400",  stage: "Demo",         nextAction: "Technical API walkthrough",          nextActionDate: d(2),  notes: "On-chain surveillance focus. Heavy endpoint usage expected." },
-  { id: "m9",  company: "Chainalysis",     contact: "Lisa Nguyen",   tier: "Enterprise", value: "132000", stage: "Negotiation",  nextAction: "Legal review of data terms",         nextActionDate: d(6),  notes: "Compliance-driven buyer. Data licensing terms are critical." },
-  { id: "m10", company: "Token Terminal",  contact: "Mikko Lahti",   tier: "Analyst",    value: "16800",  stage: "Outreach",     nextAction: "Cold email + product one-pager",     nextActionDate: d(4),  notes: "Financial metrics for DeFi protocols. Analyst tier fits." },
-  { id: "m11", company: "Glassnode",       contact: "Jan Weber",     tier: "Pro",        value: "44000",  stage: "Closed Won",   nextAction: "",                                   nextActionDate: "",    notes: "Closed Q2. On-chain metrics team. Strong retention signal." },
-  { id: "m12", company: "Bitget",          contact: "Cindy Zhao",    tier: "Pro",        value: "39600",  stage: "Prospect",     nextAction: "Map to correct ICP tier",            nextActionDate: d(10), notes: "Fast-growing CEX. Trading data needs likely match Pro tier." },
-  { id: "m13", company: "Wintermute",      contact: "James Liu",     tier: "Enterprise", value: "96000",  stage: "Closed Won",   nextAction: "",                                   nextActionDate: "",    notes: "Algo trading desk. Renewed early. Upsell to custom SLA at next QBR." },
+  { id: "m1",  company: "Binance",         contact: "Kevin Lim",     tier: "Enterprise", value: "84000",  stage: "Negotiation",  nextAction: "Send revised contract",              nextActionDate: d(2),  notes: "Custom rate limit SLA + dedicated support. Upgrading from Pro." },
+  { id: "m2",  company: "OKX",             contact: "Sarah Chen",    tier: "Enterprise", value: "42000",  stage: "Proposal",     nextAction: "Follow up on pricing deck",          nextActionDate: d(4),  notes: "Evaluating against CMC API. Enterprise tier for data licensing terms." },
+  { id: "m3",  company: "Nansen",          contact: "Wei Zhang",     tier: "Pro",        value: "8400",   stage: "Demo",         nextAction: "Product demo call",                  nextActionDate: d(1),  notes: "On-chain analytics team. NFT & DeFi endpoints. Pro tier fits usage." },
+  { id: "m4",  company: "Jump Trading",    contact: "Alex Park",     tier: "Enterprise", value: "96000",  stage: "Outreach",     nextAction: "LinkedIn connect + intro email",     nextActionDate: d(3),  notes: "Quant desk. High-freq tick data needs. Custom SLA required." },
+  { id: "m5",  company: "Messari",         contact: "Tom Rivera",    tier: "Enterprise", value: "36000",  stage: "Closed Won",   nextAction: "",                                   nextActionDate: "",    notes: "Closed Q1. Research platform — Enterprise for data redistribution rights." },
+  { id: "m6",  company: "Delphi Digital",  contact: "Maya Patel",    tier: "Analyst",    value: "3000",   stage: "Prospect",     nextAction: "Research team cold outreach",        nextActionDate: d(7),  notes: "Small research team. Analyst tier fits — ~5 seats, moderate call vol." },
+  { id: "m7",  company: "Kaiko",           contact: "Pierre Dubois", tier: "Enterprise", value: "60000",  stage: "Proposal",     nextAction: "Send enterprise pricing + SLA doc",  nextActionDate: d(5),  notes: "Institutional data client. Needs tick-by-tick OHLCV + data licensing." },
+  { id: "m8",  company: "Arkham Intel",    contact: "Ryan Moore",    tier: "Pro",        value: "9600",   stage: "Demo",         nextAction: "Technical API walkthrough",          nextActionDate: d(2),  notes: "On-chain surveillance. High endpoint usage, Pro tier call vol fits." },
+  { id: "m9",  company: "Chainalysis",     contact: "Lisa Nguyen",   tier: "Enterprise", value: "72000",  stage: "Negotiation",  nextAction: "Legal review of data terms",         nextActionDate: d(6),  notes: "Compliance firm. Data licensing + redistribution rights are critical." },
+  { id: "m10", company: "Token Terminal",  contact: "Mikko Lahti",   tier: "Analyst",    value: "2400",   stage: "Outreach",     nextAction: "Cold email + product one-pager",     nextActionDate: d(4),  notes: "DeFi financial metrics team. Small team, moderate usage — Analyst fits." },
+  { id: "m11", company: "Glassnode",       contact: "Jan Weber",     tier: "Enterprise", value: "48000",  stage: "Closed Won",   nextAction: "",                                   nextActionDate: "",    notes: "On-chain metrics firm. Enterprise for data redistribution. Closed Q2." },
+  { id: "m12", company: "Bitget",          contact: "Cindy Zhao",    tier: "Enterprise", value: "36000",  stage: "Prospect",     nextAction: "Qualify data needs + ICP mapping",   nextActionDate: d(10), notes: "Fast-growing CEX. Exchange-scale API usage warrants Enterprise tier." },
+  { id: "m13", company: "Wintermute",      contact: "James Liu",     tier: "Enterprise", value: "96000",  stage: "Closed Won",   nextAction: "",                                   nextActionDate: "",    notes: "Algo trading desk. Custom SLA + priority support. Renewed early." },
 ];
 
 const empty = (): Deal => ({
@@ -75,12 +78,10 @@ export default function PipelineTracker() {
 
   const activeDeals = deals.filter(d => !["Closed Won", "Closed Lost"].includes(d.stage));
   const wonDeals    = deals.filter(d => d.stage === "Closed Won");
-
   const totalPipeline = activeDeals.reduce((s, d) => s + (parseFloat(d.value) || 0), 0);
   const wonValue      = wonDeals.reduce((s, d) => s + (parseFloat(d.value) || 0), 0);
   const winRate       = deals.filter(d => d.stage !== "Prospect").length
-    ? Math.round((wonDeals.length / deals.filter(d => d.stage !== "Prospect").length) * 100)
-    : 0;
+    ? Math.round((wonDeals.length / deals.filter(d => d.stage !== "Prospect").length) * 100) : 0;
 
   const urgentDeals = activeDeals.filter(d => {
     if (!d.nextActionDate) return false;
@@ -98,7 +99,6 @@ export default function PipelineTracker() {
         </button>
       </div>
 
-      {/* Summary */}
       <div className="grid grid-cols-4 gap-2 mb-4">
         <div className="bg-[#0D1117] rounded-lg p-3 text-center">
           <div className="text-lg font-bold text-[#E6EDF3]">{activeDeals.length}</div>
@@ -118,7 +118,6 @@ export default function PipelineTracker() {
         </div>
       </div>
 
-      {/* Urgent actions */}
       {urgentDeals.length > 0 && (
         <div className="mb-3 p-2 bg-orange-900/20 border border-orange-800/40 rounded-lg">
           <div className="text-xs text-orange-400 font-medium mb-1">⚡ Action needed in ≤3 days</div>
@@ -128,7 +127,6 @@ export default function PipelineTracker() {
         </div>
       )}
 
-      {/* New deal form */}
       {showForm && (
         <div className="mb-4 p-3 bg-[#0D1117] border border-[#8DC647]/30 rounded-xl space-y-2">
           <div className="grid grid-cols-2 gap-2">
@@ -157,7 +155,6 @@ export default function PipelineTracker() {
         </div>
       )}
 
-      {/* Deal list */}
       <div className="space-y-2 max-h-96 overflow-y-auto">
         {deals.length === 0 && !showForm && (
           <div className="text-center text-xs text-[#8B949E] py-8">No deals yet.</div>

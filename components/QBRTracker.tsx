@@ -21,13 +21,14 @@ const STORAGE_KEY = "revops_qbr";
 const TIERS = ["Demo", "Analyst", "Lite", "Pro", "Enterprise"];
 const d = (n: number) => new Date(Date.now() + n * 86400000).toISOString().split("T")[0];
 
+// ARR aligned with CoinGecko tier pricing
 const MOCK: QBRAccount[] = [
-  { id: "q1", company: "Coinbase",    tier: "Enterprise", arr: "180000", csm: "Sarah", healthScore: 91, lastQBR: d(-90), nextQBR: d(0),   lastTouchDate: d(-3),  openActions: "Review expanded endpoint usage, propose Enterprise+ tier" },
-  { id: "q2", company: "Wintermute",  tier: "Enterprise", arr: "96000",  csm: "James", healthScore: 85, lastQBR: d(-45), nextQBR: d(45),  lastTouchDate: d(-7),  openActions: "Share WebSocket beta access, schedule tech deep-dive" },
-  { id: "q3", company: "OKX",         tier: "Pro",        arr: "42000",  csm: "Sarah", healthScore: 62, lastQBR: d(-95), nextQBR: d(-5),  lastTouchDate: d(-21), openActions: "OVERDUE — re-engage contact, send usage report" },
-  { id: "q4", company: "CryptoQuant", tier: "Analyst",    arr: "16800",  csm: "James", healthScore: 78, lastQBR: d(-30), nextQBR: d(60),  lastTouchDate: d(-2),  openActions: "Upsell to Pro — usage at 85% of Analyst limit" },
-  { id: "q5", company: "Bybit",       tier: "Pro",        arr: "38000",  csm: "Sarah", healthScore: 34, lastQBR: d(-120),nextQBR: d(-30), lastTouchDate: d(-45), openActions: "CRITICAL — champion left, find new exec sponsor" },
-  { id: "q6", company: "The Block",   tier: "Analyst",    arr: "14400",  csm: "James", healthScore: 55, lastQBR: d(-60), nextQBR: d(30),  lastTouchDate: d(-14), openActions: "Budget review Q3 — prepare ROI case study" },
+  { id: "q1", company: "Coinbase",     tier: "Enterprise", arr: "180000", csm: "Sarah", healthScore: 91, lastQBR: d(-90),  nextQBR: d(0),   lastTouchDate: d(-3),  openActions: "Review expanded endpoint usage, propose custom SLA upgrade" },
+  { id: "q2", company: "Wintermute",   tier: "Enterprise", arr: "96000",  csm: "James", healthScore: 85, lastQBR: d(-45),  nextQBR: d(45),  lastTouchDate: d(-7),  openActions: "Share WebSocket beta access, schedule tech deep-dive" },
+  { id: "q3", company: "OKX",          tier: "Enterprise", arr: "42000",  csm: "Sarah", healthScore: 62, lastQBR: d(-95),  nextQBR: d(-5),  lastTouchDate: d(-21), openActions: "OVERDUE — re-engage contact, send monthly usage report" },
+  { id: "q4", company: "CryptoQuant",  tier: "Pro",        arr: "7200",   csm: "James", healthScore: 78, lastQBR: d(-30),  nextQBR: d(60),  lastTouchDate: d(-2),  openActions: "Approaching Pro call limit — upsell to Enterprise at renewal" },
+  { id: "q5", company: "Bybit",        tier: "Enterprise", arr: "36000",  csm: "Sarah", healthScore: 34, lastQBR: d(-120), nextQBR: d(-30), lastTouchDate: d(-45), openActions: "CRITICAL — champion left, find new exec sponsor urgently" },
+  { id: "q6", company: "The Block",    tier: "Analyst",    arr: "2400",   csm: "James", healthScore: 55, lastQBR: d(-60),  nextQBR: d(30),  lastTouchDate: d(-14), openActions: "Budget review Q3 — prepare ROI case study for editorial team" },
 ];
 
 const emptyAccount = (): QBRAccount => ({
@@ -44,9 +45,9 @@ function getStatus(nextQBR: string): "overdue" | "due-soon" | "on-track" {
 }
 
 const STATUS_STYLES = {
-  overdue:   "bg-red-900/40 text-red-400",
-  "due-soon":"bg-yellow-900/40 text-yellow-400",
-  "on-track":"bg-green-900/40 text-green-400",
+  overdue:    "bg-red-900/40 text-red-400",
+  "due-soon": "bg-yellow-900/40 text-yellow-400",
+  "on-track": "bg-green-900/40 text-green-400",
 };
 const STATUS_LABELS = { overdue: "Overdue", "due-soon": "Due Soon", "on-track": "On Track" };
 
@@ -74,8 +75,8 @@ export default function QBRTracker() {
     return order[getStatus(a.nextQBR)] - order[getStatus(b.nextQBR)];
   });
 
-  const overdue = accounts.filter(a => getStatus(a.nextQBR) === "overdue").length;
-  const dueSoon = accounts.filter(a => getStatus(a.nextQBR) === "due-soon").length;
+  const overdue  = accounts.filter(a => getStatus(a.nextQBR) === "overdue").length;
+  const dueSoon  = accounts.filter(a => getStatus(a.nextQBR) === "due-soon").length;
   const avgHealth = accounts.length ? Math.round(accounts.reduce((s, a) => s + a.healthScore, 0) / accounts.length) : 0;
 
   return (
@@ -143,12 +144,12 @@ export default function QBRTracker() {
 
       <div className="space-y-2 max-h-[480px] overflow-y-auto">
         {sorted.map(acc => {
-          const status = getStatus(acc.nextQBR);
+          const status    = getStatus(acc.nextQBR);
           const touchDays = acc.lastTouchDate ? differenceInDays(new Date(), parseISO(acc.lastTouchDate)) : 0;
-          const isStale = touchDays > 30;
-          const h = acc.healthScore;
+          const isStale   = touchDays > 30;
+          const h         = acc.healthScore;
           const healthColor = h >= 70 ? "bg-green-400" : h >= 40 ? "bg-yellow-400" : "bg-red-400";
-          const healthText = h >= 70 ? "text-green-400" : h >= 40 ? "text-yellow-400" : "text-red-400";
+          const healthText  = h >= 70 ? "text-green-400" : h >= 40 ? "text-yellow-400" : "text-red-400";
           return (
             <div key={acc.id} className="border border-[#21262D] rounded-lg p-3 hover:bg-[#21262D]/30 group transition-colors">
               <div className="flex items-start gap-3">
@@ -158,7 +159,6 @@ export default function QBRTracker() {
                     <span className="text-xs text-[#8B949E] bg-[#21262D] px-1.5 py-0.5 rounded">{acc.tier}</span>
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_STYLES[status]}`}>{STATUS_LABELS[status]}</span>
                   </div>
-                  {/* Health bar */}
                   <div className="flex items-center gap-2 mb-2">
                     <div className="flex-1 h-1.5 bg-[#21262D] rounded-full overflow-hidden">
                       <div className={`h-full rounded-full ${healthColor}`} style={{ width: `${h}%` }} />

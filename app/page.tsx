@@ -13,6 +13,8 @@ import ForecastActual from "@/components/ForecastActual";
 import HubSpotSync from "@/components/HubSpotSync";
 import CohortRetention from "@/components/CohortRetention";
 import LeadershipSummary from "@/components/LeadershipSummary";
+import ProspectRadar from "@/components/ProspectRadar";
+import AdsPipeline from "@/components/AdsPipeline";
 
 export default function Dashboard() {
   const now = new Date();
@@ -21,7 +23,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-[#0D1117] text-[#E6EDF3]">
-      {/* Header */}
       <header className="border-b border-[#21262D] px-6 py-3 flex items-center justify-between sticky top-0 bg-[#0D1117]/95 backdrop-blur z-10">
         <div className="flex items-center gap-3">
           <div className="w-7 h-7 rounded-full bg-[#8DC647] flex items-center justify-center text-black font-bold text-xs">CG</div>
@@ -70,6 +71,13 @@ export default function Dashboard() {
             <PipelineTracker />
             <HubSpotSync />
           </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+            <ApiUsageMonitor />
+            <ProspectRadar />
+          </div>
+          <div className="mt-4">
+            <AdsPipeline />
+          </div>
         </div>
 
         {/* ── SECTION 4: RENEWALS & RETENTION ────────────────────────────── */}
@@ -84,16 +92,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* ── SECTION 5: API & PRODUCT INTELLIGENCE ──────────────────────── */}
-        <div>
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-1 h-4 bg-purple-400 rounded-full" />
-            <span className="text-xs font-semibold text-[#8B949E] uppercase tracking-wider">API & Product Intelligence</span>
-          </div>
-          <ApiUsageMonitor />
-        </div>
-
-        {/* ── SECTION 6: MARKET CONTEXT ───────────────────────────────────── */}
+        {/* ── SECTION 5: MARKET CONTEXT (collapsed) ──────────────────────── */}
         <details className="group">
           <summary className="flex items-center gap-2 cursor-pointer list-none mb-3 select-none">
             <div className="w-1 h-4 bg-orange-400 rounded-full" />
@@ -120,7 +119,7 @@ export default function Dashboard() {
       </main>
 
       <footer className="border-t border-[#21262D] px-6 py-3 text-center text-xs text-[#8B949E]">
-        CoinGecko RevOps Command Center · Pipeline & renewals use mock data · Add HUBSPOT_API_KEY for live CRM sync
+        CoinGecko RevOps Command Center · API, Ads & renewals use mock data · Add HUBSPOT_API_KEY for live CRM sync
       </footer>
     </div>
   );

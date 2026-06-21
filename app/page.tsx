@@ -12,6 +12,7 @@ import QBRTracker from "@/components/QBRTracker";
 import ForecastActual from "@/components/ForecastActual";
 import HubSpotSync from "@/components/HubSpotSync";
 import CohortRetention from "@/components/CohortRetention";
+import LeadershipSummary from "@/components/LeadershipSummary";
 
 export default function Dashboard() {
   const now = new Date();
@@ -20,7 +21,8 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-[#0D1117] text-[#E6EDF3]">
-      <header className="border-b border-[#21262D] px-6 py-3 flex items-center justify-between sticky top-0 bg-[#0D1117]/90 backdrop-blur z-10">
+      {/* Header */}
+      <header className="border-b border-[#21262D] px-6 py-3 flex items-center justify-between sticky top-0 bg-[#0D1117]/95 backdrop-blur z-10">
         <div className="flex items-center gap-3">
           <div className="w-7 h-7 rounded-full bg-[#8DC647] flex items-center justify-center text-black font-bold text-xs">CG</div>
           <div>
@@ -35,51 +37,90 @@ export default function Dashboard() {
       </header>
 
       <main className="px-4 py-5 max-w-7xl mx-auto space-y-5">
-        {/* Row 1: Market Pulse */}
-        <MarketPulse />
 
-        {/* Row 2: Revenue Metrics */}
-        <RevenueMetrics />
-
-        {/* Row 3: Forecast + Cohort */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <ForecastActual />
-          <CohortRetention />
+        {/* ── SECTION 1: LEADERSHIP VIEW ─────────────────────────────────── */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-1 h-4 bg-[#8DC647] rounded-full" />
+            <span className="text-xs font-semibold text-[#8B949E] uppercase tracking-wider">Leadership View</span>
+          </div>
+          <LeadershipSummary />
         </div>
 
-        {/* Row 4: Sector Performance */}
-        <SectorPerformance />
-
-        {/* Row 5: Trending + Top Movers */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <TrendingCoins />
-          <TopMovers />
+        {/* ── SECTION 2: REVENUE & FORECAST ──────────────────────────────── */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-1 h-4 bg-yellow-400 rounded-full" />
+            <span className="text-xs font-semibold text-[#8B949E] uppercase tracking-wider">Revenue & Forecast</span>
+          </div>
+          <RevenueMetrics />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+            <ForecastActual />
+            <CohortRetention />
+          </div>
         </div>
 
-        {/* Row 6: Pipeline + Renewal */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <PipelineTracker />
-          <RenewalRadar />
+        {/* ── SECTION 3: PIPELINE & DEALS ────────────────────────────────── */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-1 h-4 bg-blue-400 rounded-full" />
+            <span className="text-xs font-semibold text-[#8B949E] uppercase tracking-wider">Pipeline & Deals</span>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <PipelineTracker />
+            <HubSpotSync />
+          </div>
         </div>
 
-        {/* Row 7: QBR Tracker full width */}
-        <QBRTracker />
+        {/* ── SECTION 4: RENEWALS & RETENTION ────────────────────────────── */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-1 h-4 bg-red-400 rounded-full" />
+            <span className="text-xs font-semibold text-[#8B949E] uppercase tracking-wider">Renewals & Retention</span>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <RenewalRadar />
+            <QBRTracker />
+          </div>
+        </div>
 
-        {/* Row 8: HubSpot Sync + API Usage */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <HubSpotSync />
+        {/* ── SECTION 5: API & PRODUCT INTELLIGENCE ──────────────────────── */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-1 h-4 bg-purple-400 rounded-full" />
+            <span className="text-xs font-semibold text-[#8B949E] uppercase tracking-wider">API & Product Intelligence</span>
+          </div>
           <ApiUsageMonitor />
         </div>
 
-        {/* Row 9: Watchlist + Quick Notes */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <Watchlist />
-          <QuickNotes />
-        </div>
+        {/* ── SECTION 6: MARKET CONTEXT ───────────────────────────────────── */}
+        <details className="group">
+          <summary className="flex items-center gap-2 cursor-pointer list-none mb-3 select-none">
+            <div className="w-1 h-4 bg-orange-400 rounded-full" />
+            <span className="text-xs font-semibold text-[#8B949E] uppercase tracking-wider">Market Context</span>
+            <span className="text-xs text-[#8B949E] ml-1">(Live CoinGecko data)</span>
+            <svg className="w-4 h-4 text-[#8B949E] ml-auto transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <div className="space-y-4">
+            <MarketPulse />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <TrendingCoins />
+              <TopMovers />
+            </div>
+            <SectorPerformance />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <Watchlist />
+              <QuickNotes />
+            </div>
+          </div>
+        </details>
+
       </main>
 
       <footer className="border-t border-[#21262D] px-6 py-3 text-center text-xs text-[#8B949E]">
-        Market data via CoinGecko API · Pipeline, renewals & QBR use mock data · Add HUBSPOT_API_KEY to Vercel env for live CRM sync
+        CoinGecko RevOps Command Center · Pipeline & renewals use mock data · Add HUBSPOT_API_KEY for live CRM sync
       </footer>
     </div>
   );
